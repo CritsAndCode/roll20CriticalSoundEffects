@@ -1,15 +1,9 @@
+//Critical Sound Effects v1.00.02
+
 on('ready',function(){
     'use strict';
     var excludeGM = true, // this to false if you wish to include GM rolls
-        playerIds = [],
         players = findObjs({_type:'player'}) || [];
-        
-        
-        _.each(players,function (obj){
-            if(playerIsGM(obj.get('id')) && !excludeGM || !playerIsGM(obj.get('id'))) {
-                playerIds.push(obj.get('id'));
-            }
-        });
         
     var allsongs = findObjs({
             _type: 'jukeboxtrack',
@@ -26,18 +20,20 @@ on('ready',function(){
     });
     
     on("chat:message", function(msg) {
-        //for Shaped 5e Character Sheet
-        if (msg.inlinerolls) {
-            msg.inlinerolls.forEach(function(inlineRoll) {
-                criticalHitOrFail(inlineRoll.results);
-            });
-        } 
-        
-        //for roll chat command
-        else if (msg && isJson(msg.content)) {
-            var content = JSON.parse(msg.content);
-            criticalHitOrFail(content);
-        } 
+        if (!playerIsGM(msg.playerid) || !excludeGM) {
+            //for Shaped 5e Character Sheet
+            if (msg.inlinerolls) {
+                msg.inlinerolls.forEach(function(inlineRoll) {
+                    criticalHitOrFail(inlineRoll.results);
+                });
+            } 
+            
+            //for roll chat command
+            else if (msg && isJson(msg.content)) {
+                var content = JSON.parse(msg.content);
+                criticalHitOrFail(content);
+            } 
+        }
     });
     
     function criticalHitOrFail(content) {
