@@ -26,9 +26,6 @@ on('ready',function(){
     });
 
     on("chat:message", function(msg) {
-        log(playerIds.some(function(playerId){
-            return(playerId === msg.playerid);
-        }));
         //for Shaped 5e Character Sheet
         if (msg.inlinerolls) {
             msg.inlinerolls.forEach(function(inlineRoll) {
