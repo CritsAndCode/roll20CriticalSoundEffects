@@ -2,24 +2,23 @@
 
 on('ready',function(){
     'use strict';
-    var excludeGM = true, // this to false if you wish to include GM rolls
-        players = findObjs({_type:'player'}) || [];
-        
-    var allsongs = findObjs({
-            _type: 'jukeboxtrack',
-        }),
-        criticalHit = {},
-        criticalFail = {};
-        
-    allsongs.forEach(function(song) {
-        if(song.get('title') === 'Critical Hit') {
-            criticalHit = song;
-        } else if (song.get('title') === 'Critical Fail') {
-            criticalFail = song;
-        }
-    });
+    var excludeGM = true; // this to false if you wish to include GM rolls
     
     on("chat:message", function(msg) {
+        var allsongs = findObjs({
+                _type: 'jukeboxtrack',
+            }),
+            criticalHit = null,
+            criticalFail = null;
+
+        allsongs.forEach(function(song) {
+            if(song.get('title') === 'Critical Hit') {
+                criticalHit = song;
+            } else if (song.get('title') === 'Critical Fail') {
+                criticalFail = song;
+            }
+        });
+        
         if (!playerIsGM(msg.playerid) || !excludeGM) {
             //for Shaped 5e Character Sheet
             if (msg.inlinerolls) {
@@ -58,7 +57,9 @@ on('ready',function(){
     }
     
     function play (song) {
-        song.set({'playing': true, 'softstop': false});
+        if (song) {
+            song.set({'playing': true, 'softstop': false});
+        }
     }
 
     log('Script loaded: Critical Hit/Failure Sound Effects');
