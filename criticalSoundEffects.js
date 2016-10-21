@@ -33,9 +33,8 @@ on('ready',function(){
                 criticalHitOrFail(content);
             } 
         }
-    });
-    
-    function criticalHitOrFail(content) {
+        
+        function criticalHitOrFail(content) {
             content.rolls.forEach(function(roll) {
                 if (roll.dice === 1 && roll.sides === 20) {
                     if (roll.results[0].v === 20) {
@@ -46,6 +45,7 @@ on('ready',function(){
                 }
             });
         }
+    });
     
     function isJson(str) {
         try {
