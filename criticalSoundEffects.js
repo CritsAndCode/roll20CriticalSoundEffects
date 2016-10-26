@@ -7,7 +7,7 @@ on('ready',function(){
             css: {
                 button: {
                     'border': '1px solid #cccccc',
-                    'border-radius': '1em',
+                    'border-radius': '2px',
                     'background-color': '#006dcc',
                     'margin': '0 .1em',
                     'font-weight': 'bold',
@@ -61,12 +61,20 @@ on('ready',function(){
                         '!jukebox play ?{Select a song to play|'+songs+'}', 'Play a song', '#CDAE88', 'black'
                     ),
                     
+                    crossfadeButton = makeButton(
+                        '!jukebox crossfade ?{Select a song to crossfade to|'+songs+'}', 'Crossfade to a song', '#CDAE88', 'black'
+                    ),
+                    
                     stopButton = makeButton(
                         '!jukebox stop ?{Select a song to stop|'+playingSongs+'}', 'Stop a song', '#CDAE88', 'black'
                     ),
                     
-                    fadeButton = makeButton(
-                        '!jukebox fade ?{Select a song to fade out|'+playingSongs+'}', 'Fade a song out', '#CDAE88', 'black'
+                    fadeInButton = makeButton(
+                        '!jukebox fadeIn ?{Select a song to fade in|'+songs+'}', 'Fade a song in', '#CDAE88', 'black'
+                    ),
+                    
+                    fadeOutButton = makeButton(
+                        '!jukebox fadeOut ?{Select a song to fade out|'+playingSongs+'}', 'Fade a song out', '#CDAE88', 'black'
                     ),
                     
                     stopAllButton = makeButton(
@@ -74,10 +82,10 @@ on('ready',function(){
                     ),
                     
                     fadeAllButton = makeButton(
-                        '!jukebox fadeAll', 'Fade all songs out', '#CDAE88', 'black'
+                        '!jukebox fadeAllOut', 'Fade all songs out', '#CDAE88', 'black'
                     );
             
-                    sendChat(msg.who, '/w gm ' + playButton + stopButton + fadeButton + stopAllButton + fadeAllButton);
+                    sendChat(msg.who, '/w gm ' + playButton + stopButton + crossfadeButton + fadeInButton + fadeOutButton + stopAllButton + fadeAllButton);
                 } else {
                     if (args[1] === 'play') {
                         var songTitle = args.splice(2).join(' ');
@@ -89,20 +97,40 @@ on('ready',function(){
                         stop(getSong(songTitle, allsongs));
                     }
                     
-                    if (args[1] === 'stopAll') {
+                    if (args[1] === 'crossfade') {
+                        var songTitle = args.splice(2).join(' ');
                         allsongs.forEach(function(song) {
-                            stop(song);
+                            if (song.get('playing') && song.get('title') !== songTitle) {
+                                fadeOut(song);
+                            }
                         });
+                        fadeIn(getSong(songTitle, allsongs));
+                        
                     }
                     
-                    if (args[1] === 'fade') {
+                    if (args[1] === 'fadeIn') {
+                        var songTitle = args.splice(2).join(' ');
+                        fadeIn(getSong(songTitle, allsongs));
+                    }
+                    
+                    if (args[1] === 'fadeOut') {
                         var songTitle = args.splice(2).join(' ');
                         fadeOut(getSong(songTitle, allsongs));
                     }
                     
-                    if (args[1] === 'fadeAll') {
+                    if (args[1] === 'stopAll') {
                         allsongs.forEach(function(song) {
-                            fadeOut(song);
+                            if (song.get('playing')) {
+                                stop(song);
+                            }
+                        });
+                    }
+                    
+                    if (args[1] === 'fadeAllOut') {
+                        allsongs.forEach(function(song) {
+                            if (song.get('playing')) {
+                                fadeOut(song);
+                            }
                         });
                     }
                 }
@@ -175,9 +203,8 @@ on('ready',function(){
             var originalVolume = song.get('volume') || 0;
             
             var i = setInterval(function(){
-                // do your thing
-            
-                volume = volume - 10;
+
+                volume = volume - 7.5;
                 song.set({'volume': volume});
                 
                 if(volume <= 0) {
@@ -187,6 +214,26 @@ on('ready',function(){
             }, 1000);
         
         }
+    }
+    
+    function fadeIn(song) {
+        if (song) {
+            var volume = 0;
+            var originalVolume = song.get('volume') || 0;
+            
+            song.set({'playing': true, 'softstop': false, 'volume': 0});
+            
+            var i = setInterval(function(){
+
+                volume = volume + 7.5;
+                song.set({'volume': volume});
+                
+                if(volume >= originalVolume) {
+                    song.set({'volume': originalVolume});
+                    clearInterval(i);
+                }
+            }, 1000);
+        } 
     }
     
     function buildTemplates() {
