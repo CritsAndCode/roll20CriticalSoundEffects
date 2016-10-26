@@ -70,19 +70,19 @@ on('ready',function(){
                     ),
                     
                     fadeInButton = makeButton(
-                        '!jukebox fadeIn ?{Select a song to fade in|'+songs+'}', 'Fade a song in', '#CDAE88', 'black'
+                        '!jukebox fadein ?{Select a song to fade in|'+songs+'}', 'Fade a song in', '#CDAE88', 'black'
                     ),
                     
                     fadeOutButton = makeButton(
-                        '!jukebox fadeOut ?{Select a song to fade out|'+playingSongs+'}', 'Fade a song out', '#CDAE88', 'black'
+                        '!jukebox fadeout ?{Select a song to fade out|'+playingSongs+'}', 'Fade a song out', '#CDAE88', 'black'
                     ),
                     
                     stopAllButton = makeButton(
-                        '!jukebox stopAll', 'Stop all songs', '#CDAE88', 'black'
+                        '!jukebox stopall', 'Stop all songs', '#CDAE88', 'black'
                     ),
                     
                     fadeAllButton = makeButton(
-                        '!jukebox fadeAllOut', 'Fade all songs out', '#CDAE88', 'black'
+                        '!jukebox fadeallout', 'Fade all songs out', '#CDAE88', 'black'
                     );
             
                     sendChat(msg.who, '/w gm ' + playButton + stopButton + crossfadeButton + fadeInButton + fadeOutButton + stopAllButton + fadeAllButton);
@@ -108,17 +108,17 @@ on('ready',function(){
                         
                     }
                     
-                    if (args[1] === 'fadeIn') {
+                    if (args[1] === 'fadein') {
                         var songTitle = args.splice(2).join(' ');
                         fadeIn(getSong(songTitle, allsongs));
                     }
                     
-                    if (args[1] === 'fadeOut') {
+                    if (args[1] === 'fadeout') {
                         var songTitle = args.splice(2).join(' ');
                         fadeOut(getSong(songTitle, allsongs));
                     }
                     
-                    if (args[1] === 'stopAll') {
+                    if (args[1] === 'stopall') {
                         allsongs.forEach(function(song) {
                             if (song.get('playing')) {
                                 stop(song);
@@ -126,7 +126,7 @@ on('ready',function(){
                         });
                     }
                     
-                    if (args[1] === 'fadeAllOut') {
+                    if (args[1] === 'fadeallout') {
                         allsongs.forEach(function(song) {
                             if (song.get('playing')) {
                                 fadeOut(song);
