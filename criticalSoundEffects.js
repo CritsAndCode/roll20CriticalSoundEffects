@@ -276,5 +276,5 @@ on('ready',function(){
         });
     }
 
-    log('Script loaded: Critical Hit/Failure Sound Effects');
+    log('Script loaded: Critical Sound Effects');
 });
