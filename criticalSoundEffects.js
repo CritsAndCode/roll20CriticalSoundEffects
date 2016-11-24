@@ -1,4 +1,4 @@
-//Critical Sound Effects v1.1.0
+//Critical Sound Effects v1.1.1
 
 on('ready',function(){
     'use strict';
@@ -21,148 +21,150 @@ on('ready',function(){
     buildTemplates();
     
     on("chat:message", function(msg) {
-        if (msg.type === 'api'&& playerIsGM(msg.playerid)) {
-            var args = msg.content.split(/\s+/);
-            
-            if (args[0] === '!jukebox') {
-                var allsongs = findObjs({
-                        _type: 'jukeboxtrack',
-                    }),
-                    criticalHit = null,
-                    criticalFail = null;
+        var args = msg.content.split(/\s+/);
         
-                allsongs.forEach(function(song) {
-                    if(song.get('title') === 'Critical Hit') {
-                        criticalHit = song;
-                    } else if (song.get('title') === 'Critical Fail') {
-                        criticalFail = song;
-                    }
+        if (args[0] === '!jukebox' && playerIsGM(msg.playerid)) {
+            var allsongs = findObjs({
+                    _type: 'jukeboxtrack',
                 });
                 
-                if (args.length === 1) {
-                    var songs = allsongs
-                        .map(function (song) {
-                            return song.get('title');
-                        })
-                        .sort()
-                        .join('|'),
+            if (args.length === 1) {
+                
                         
-                    playingSongs = allsongs
-                        .filter(function (song) {
-                            return song.get('playing');
-                        })
-                        .map(function (song) {
-                            return song.get('title');
-                        })
-                        .sort()
-                        .join('|'),
+                var songs = allsongs
+                    .map(function (song) {
+                        return song.get('title');
+                    })
+                    .sort()
+                    .join('|'),
                     
-                    playButton = makeButton(
-                        '!jukebox play ?{Select a song to play|'+songs+'}', 'Play a song', '#CDAE88', 'black'
-                    ),
-                    
-                    crossfadeButton = makeButton(
-                        '!jukebox crossfade ?{Select a song to crossfade to|'+songs+'}', 'Crossfade to a song', '#CDAE88', 'black'
-                    ),
-                    
-                    stopButton = makeButton(
-                        '!jukebox stop ?{Select a song to stop|'+playingSongs+'}', 'Stop a song', '#CDAE88', 'black'
-                    ),
-                    
-                    fadeInButton = makeButton(
-                        '!jukebox fadein ?{Select a song to fade in|'+songs+'}', 'Fade a song in', '#CDAE88', 'black'
-                    ),
-                    
-                    fadeOutButton = makeButton(
-                        '!jukebox fadeout ?{Select a song to fade out|'+playingSongs+'}', 'Fade a song out', '#CDAE88', 'black'
-                    ),
-                    
-                    stopAllButton = makeButton(
-                        '!jukebox stopall', 'Stop all songs', '#CDAE88', 'black'
-                    ),
-                    
-                    fadeAllButton = makeButton(
-                        '!jukebox fadeallout', 'Fade all songs out', '#CDAE88', 'black'
-                    );
-            
-                    sendChat(msg.who, '/w gm ' + playButton + stopButton + crossfadeButton + fadeInButton + fadeOutButton + stopAllButton + fadeAllButton);
-                } else {
-                    if (args[1] === 'play') {
-                        var songTitle = args.splice(2).join(' ');
-                        play(getSong(songTitle, allsongs));
-                    }
-                    
-                    if (args[1] === 'stop') {
-                        var songTitle = args.splice(2).join(' ');
-                        stop(getSong(songTitle, allsongs));
-                    }
-                    
-                    if (args[1] === 'crossfade') {
-                        var songTitle = args.splice(2).join(' ');
-                        allsongs.forEach(function(song) {
-                            if (song.get('playing') && song.get('title') !== songTitle) {
-                                fadeOut(song);
-                            }
-                        });
-                        fadeIn(getSong(songTitle, allsongs));
-                        
-                    }
-                    
-                    if (args[1] === 'fadein') {
-                        var songTitle = args.splice(2).join(' ');
-                        fadeIn(getSong(songTitle, allsongs));
-                    }
-                    
-                    if (args[1] === 'fadeout') {
-                        var songTitle = args.splice(2).join(' ');
-                        fadeOut(getSong(songTitle, allsongs));
-                    }
-                    
-                    if (args[1] === 'stopall') {
-                        allsongs.forEach(function(song) {
-                            if (song.get('playing')) {
-                                stop(song);
-                            }
-                        });
-                    }
-                    
-                    if (args[1] === 'fadeallout') {
-                        allsongs.forEach(function(song) {
-                            if (song.get('playing')) {
-                                fadeOut(song);
-                            }
-                        });
-                    }
+                playingSongs = allsongs
+                    .filter(function (song) {
+                        return song.get('playing');
+                    })
+                    .map(function (song) {
+                        return song.get('title');
+                    })
+                    .sort()
+                    .join('|'),
+                
+                playButton = makeButton(
+                    '!jukebox play ?{Select a song to play|'+songs+'}', 'Play a song', '#CDAE88', 'black'
+                ),
+                
+                crossfadeButton = makeButton(
+                    '!jukebox crossfade ?{Select a song to crossfade to|'+songs+'}', 'Crossfade to a song', '#CDAE88', 'black'
+                ),
+                
+                stopButton = makeButton(
+                    '!jukebox stop ?{Select a song to stop|'+playingSongs+'}', 'Stop a song', '#CDAE88', 'black'
+                ),
+                
+                fadeInButton = makeButton(
+                    '!jukebox fadein ?{Select a song to fade in|'+songs+'}', 'Fade a song in', '#CDAE88', 'black'
+                ),
+                
+                fadeOutButton = makeButton(
+                    '!jukebox fadeout ?{Select a song to fade out|'+playingSongs+'}', 'Fade a song out', '#CDAE88', 'black'
+                ),
+                
+                stopAllButton = makeButton(
+                    '!jukebox stopall', 'Stop all songs', '#CDAE88', 'black'
+                ),
+                
+                fadeAllButton = makeButton(
+                    '!jukebox fadeallout', 'Fade all songs out', '#CDAE88', 'black'
+                );
+        
+                sendChat(msg.who, '/w gm ' + playButton + stopButton + crossfadeButton + fadeInButton + fadeOutButton + stopAllButton + fadeAllButton);
+            } else {
+                if (args[1] === 'play') {
+                    var songTitle = args.splice(2).join(' ');
+                    play(getSong(songTitle, allsongs));
+                }
+                
+                if (args[1] === 'stop') {
+                    var songTitle = args.splice(2).join(' ');
+                    stop(getSong(songTitle, allsongs));
+                }
+                
+                if (args[1] === 'crossfade') {
+                    var songTitle = args.splice(2).join(' ');
+                    allsongs.forEach(function(song) {
+                        if (song.get('playing') && song.get('title') !== songTitle) {
+                            fadeOut(song);
+                        }
+                    });
+                    fadeIn(getSong(songTitle, allsongs));
+                }
+                
+                if (args[1] === 'fadein') {
+                    var songTitle = args.splice(2).join(' ');
+                    fadeIn(getSong(songTitle, allsongs));
+                }
+                
+                if (args[1] === 'fadeout') {
+                    var songTitle = args.splice(2).join(' ');
+                    fadeOut(getSong(songTitle, allsongs));
+                }
+                
+                if (args[1] === 'stopall') {
+                    allsongs.forEach(function(song) {
+                        if (song.get('playing')) {
+                            stop(song);
+                        }
+                    });
+                }
+                
+                if (args[1] === 'fadeallout') {
+                    allsongs.forEach(function(song) {
+                        if (song.get('playing')) {
+                            fadeOut(song);
+                        }
+                    });
                 }
             }
-            
-        } else {
-            if (!playerIsGM(msg.playerid) || !excludeGM) {
-                //for Shaped 5e Character Sheet
-                if (msg.inlinerolls) {
-                    msg.inlinerolls.forEach(function(inlineRoll) {
-                        criticalHitOrFail(inlineRoll.results);
-                    });
-                } 
-                
-                //for roll chat command
-                else if (msg && isJson(msg.content)) {
-                    var content = JSON.parse(msg.content);
-                    criticalHitOrFail(content);
-                } 
-            }
-            
-            function criticalHitOrFail(content) {
-                content.rolls.forEach(function(roll) {
-                    if (roll.dice === 1 && roll.sides === 20) {
-                        if (roll.results[0].v === 20) {
-                            play(criticalHit);
-                        } else if (roll.results[0].v === 1) {
-                            play(criticalFail);
-                        }
-                    }
+        }
+        
+        if (!playerIsGM(msg.playerid) || !excludeGM) {
+            //for Shaped 5e Character Sheet
+            if (msg.inlinerolls) {
+                msg.inlinerolls.forEach(function(inlineRoll) {
+                    criticalHitOrFail(inlineRoll.results);
                 });
-            }
+            } 
+            
+            //for roll chat command
+            else if (msg && isJson(msg.content)) {
+                var content = JSON.parse(msg.content);
+                criticalHitOrFail(content);
+            } 
+        }
+        
+        function criticalHitOrFail(content) {
+            content.rolls.forEach(function(roll) {
+                if (roll.dice === 1 && roll.sides === 20) {
+                    var allsongs = findObjs({
+                            _type: 'jukeboxtrack',
+                        }),
+                        criticalHit = null,
+                        criticalFail = null;
+            
+                    allsongs.forEach(function(song) {
+                        if(song.get('title') === 'Critical Hit') {
+                            criticalHit = song;
+                        } else if (song.get('title') === 'Critical Fail') {
+                            criticalFail = song;
+                        }
+                    });
+                    
+                    if (roll.results[0].v === 20) {
+                        play(criticalHit);
+                    } else if (roll.results[0].v === 1) {
+                        play(criticalFail);
+                    }
+                }
+            });
         }
     });
     
