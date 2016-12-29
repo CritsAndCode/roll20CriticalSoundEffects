@@ -126,7 +126,7 @@ on('ready',function(){
             }
         }
         
-        if (!playerIsGM(msg.playerid) || !excludeGM) {
+         if (!playerIsGM(msg.playerid) || !excludeGM && msg.type !== "gmrollresult") {
             //for Shaped 5e Character Sheet
             if (msg.inlinerolls) {
                 msg.inlinerolls.forEach(function(inlineRoll) {
