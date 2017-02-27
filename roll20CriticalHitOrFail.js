@@ -1,4 +1,4 @@
-//Critical Sound Effects v1.2.0
+//Critical Sound Effects v1.2.1
 
 on('ready',function(){
     'use strict';
