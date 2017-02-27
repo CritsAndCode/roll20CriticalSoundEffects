@@ -190,45 +190,7 @@ on('ready',function(){
     function play (song) {
         if (song) {
             song.set({'playing': true, 'softstop': false});
-        }
-    }
-    
-    function stop (song) {
-        if (song) {
-            song.set({'playing': false, 'softstop': false});
-        }
-    }
-    
-    function fadeOut(song) {
-        if (song) {
-            var volume = song.get('volume') || 0;
-            var originalVolume = song.get('volume') || 0;
-            
-            var i = setInterval(function(){
-
-                volume = volume - 7.5;
-                song.set({'volume': volume});
-                
-                if(volume <= 0) {
-                    song.set({'playing': false, 'softstop': false, 'volume': originalVolume});
-                    clearInterval(i);
-                }
-            }, 1000);
-        
-        }
-    }
-    
-    function fadeIn(song) {
-        if (song) {
-            var volume = 0;
-            var originalVolume = song.get('volume') || 0;
-            
-            song.set({'playing': true, 'softstop': false, 'volume': 0});
-            
-            var i = setInterval(function(){
-
-                volume = volume + 7.5;
-//Critical Sound Effects v1.1.1
+//Critical Sound Effects v1.2.0
 
 on('ready',function(){
     'use strict';
