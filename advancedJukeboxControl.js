@@ -1,8 +1,8 @@
-//Critical Sound Effects v1.1.1
+//Advanced Jukebox Control v1.0.0
 
 on('ready',function(){
     'use strict';
-    var excludeGM = true, // this to false if you wish to include GM rolls
+    var allowPlayers = false, // this to true if you wish to allow players control over jukebox
     defaults = {
             css: {
                 button: {
@@ -23,7 +23,7 @@ on('ready',function(){
     on("chat:message", function(msg) {
         var args = msg.content.split(/\s+/);
         
-        if (args[0] === '!jukebox' && playerIsGM(msg.playerid)) {
+        if (args[0] === '!jukebox' && (playerIsGM(msg.playerid) || allowPlayers)) {
             var allsongs = findObjs({
                     _type: 'jukeboxtrack',
                 });
@@ -124,47 +124,6 @@ on('ready',function(){
                     });
                 }
             }
-        }
-        
-         if (!playerIsGM(msg.playerid) || !excludeGM && msg.type !== "gmrollresult") {
-            //for Shaped 5e Character Sheet
-            if (msg.inlinerolls) {
-                msg.inlinerolls.forEach(function(inlineRoll) {
-                    criticalHitOrFail(inlineRoll.results);
-                });
-            } 
-            
-            //for roll chat command
-            else if (msg && isJson(msg.content)) {
-                var content = JSON.parse(msg.content);
-                criticalHitOrFail(content);
-            } 
-        }
-        
-        function criticalHitOrFail(content) {
-            content.rolls.forEach(function(roll) {
-                if (roll.dice === 1 && roll.sides === 20) {
-                    var allsongs = findObjs({
-                            _type: 'jukeboxtrack',
-                        }),
-                        criticalHit = null,
-                        criticalFail = null;
-            
-                    allsongs.forEach(function(song) {
-                        if(song.get('title') === 'Critical Hit') {
-                            criticalHit = song;
-                        } else if (song.get('title') === 'Critical Fail') {
-                            criticalFail = song;
-                        }
-                    });
-                    
-                    if (roll.results[0].v === 20) {
-                        play(criticalHit);
-                    } else if (roll.results[0].v === 1) {
-                        play(criticalFail);
-                    }
-                }
-            });
         }
     });
     
@@ -278,5 +237,5 @@ on('ready',function(){
         });
     }
 
-    log('Script loaded: Critical Sound Effects');
+    log('Script loaded: Jukebox Controls');
 });
