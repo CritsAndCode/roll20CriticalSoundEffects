@@ -1,4 +1,4 @@
-//Critical Sound Effects v1.2.1
+//Critical Sound Effects v1.2.2
 
 on('ready',function(){
     'use strict';
@@ -63,7 +63,7 @@ on('ready',function(){
                     }
                 }
 
-                if (roll.dice === 2 && roll.sides === 20) {
+                if (roll.dice === 2 && roll.sides === 20 && roll.mods && roll.mods.customCrit) {
                     if (keptResultIsCriticalHit(roll)) {
                         play(criticalHit);
                     }
