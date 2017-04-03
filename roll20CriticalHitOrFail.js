@@ -1,4 +1,4 @@
-//Critical Sound Effects v1.2.2
+//Critical Sound Effects v1.2.3
 
 on('ready',function(){
     'use strict';
@@ -38,7 +38,8 @@ on('ready',function(){
         }
 
         function criticalHitOrFail(content) {
-            content.rolls.forEach(function(roll) {
+            if (content.rolls) {
+                content.rolls.forEach(function(roll) {
                 if (roll.dice <= 2 && roll.sides === 20) {
                     var allsongs = findObjs({
                             _type: 'jukeboxtrack',
@@ -93,6 +94,7 @@ on('ready',function(){
                         });
                 }
             });
+            }
         }
     });
 
